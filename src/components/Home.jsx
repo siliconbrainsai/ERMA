@@ -4,23 +4,25 @@ import { ShieldCheck, Terminal, Cpu, Lock, User, ArrowRight } from 'lucide-react
 export default function Home({ onLogin }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Secret Password configured for ERMA
+  const SECRET_PASSWORD = 'ERMA@2026_Secure';
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
 
-    // Simulated secure handshake delay
     setTimeout(() => {
-      if (username.trim() && password.trim()) {
-        onLogin({ username, password });
+      if (password === SECRET_PASSWORD) {
+        onLogin({ username: username.trim() || 'Operator', password });
       } else {
-        setError('ACCESS DENIED: Invalid Operator Credentials.');
+        setError('ACCESS DENIED: Invalid Access Key / Password.');
         setIsLoading(false);
       }
-    }, 800);
+    }, 600);
   };
 
   return (
@@ -34,13 +36,13 @@ export default function Home({ onLogin }) {
       <div className="auth-header">
         <div className="auth-badge">
           <Cpu size={14} className="animate-spin-slow" />
-          <span>Secure Terminal v4.2 Active</span>
+          <span>Secure Enclave Active</span>
         </div>
         <h1 className="auth-title">
           ERMA ENTERPRISE
         </h1>
         <p className="auth-subtitle">
-          Advanced Resource Management & Analytics Intelligence Suite for Mission-Critical Systems.
+          Advanced Resource Management & Analytics Intelligence Suite
         </p>
       </div>
 
@@ -67,17 +69,16 @@ export default function Home({ onLogin }) {
               <User size={16} className="auth-input-icon" />
               <input 
                 type="text" 
-                required
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="Enter ID (e.g., operator_01)"
+                placeholder="Enter ID (optional)..."
                 autoComplete="username"
               />
             </div>
           </div>
 
           <div className="auth-input-group">
-            <label>Access Key</label>
+            <label>Access Key / Password</label>
             <div className="auth-input-wrapper">
               <Lock size={16} className="auth-input-icon" />
               <input 
@@ -85,7 +86,7 @@ export default function Home({ onLogin }) {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••••••"
+                placeholder="Enter secure access key..."
                 autoComplete="current-password"
               />
             </div>
@@ -108,7 +109,7 @@ export default function Home({ onLogin }) {
         </form>
 
         <div className="auth-card-footer">
-          <p>SECURE ENCLAVE • AUTHORIZED ACCESS ONLY</p>
+          <p>SECURE ACCESS KEY REQUIRED • ERMA v4.2</p>
         </div>
       </div>
     </div>
