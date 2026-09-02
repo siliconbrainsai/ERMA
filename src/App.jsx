@@ -1,67 +1,32 @@
-import React from 'react';
-import { useData } from './context/DataContext';
-import Sidebar from './components/layout/Sidebar';
-import Header from './components/layout/Header';
-import DrilldownModal from './components/layout/DrilldownModal';
-
-// Pages
-import ExecutiveSummary from './pages/ExecutiveSummary';
-import ResourceAnalytics from './pages/ResourceAnalytics';
-import SkillsDashboard from './pages/SkillsDashboard';
-import ProjectDashboard from './pages/ProjectDashboard';
-import AllocationDashboard from './pages/AllocationDashboard';
-import BenchDashboard from './pages/BenchDashboard';
-import GeographyDashboard from './pages/GeographyDashboard';
-import ManagerAnalytics from './pages/ManagerAnalytics';
-import ExperienceDashboard from './pages/ExperienceDashboard';
-import AttritionDashboard from './pages/AttritionDashboard';
-import PredictiveInsights from './pages/PredictiveInsights';
-import DataManager from './pages/DataManager';
+import React, { useState } from 'react';
+import Home from './components/Home';
+import Dashboard from './components/Dashboard';
 
 export default function App() {
-  const { activeTab } = useData();
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return localStorage.getItem('erma_auth_session') === 'active';
+  });
 
-  const renderActivePage = () => {
-    switch (activeTab) {
-      case 'executive':
-        return <ExecutiveSummary />;
-      case 'resources':
-        return <ResourceAnalytics />;
-      case 'skills':
-        return <SkillsDashboard />;
-      case 'projects':
-        return <ProjectDashboard />;
-      case 'allocation':
-        return <AllocationDashboard />;
-      case 'bench':
-        return <BenchDashboard />;
-      case 'geography':
-        return <GeographyDashboard />;
-      case 'manager':
-        return <ManagerAnalytics />;
-      case 'experience':
-        return <ExperienceDashboard />;
-      case 'attrition':
-        return <AttritionDashboard />;
-      case 'predictive':
-        return <PredictiveInsights />;
-      case 'datamanager':
-        return <DataManager />;
-      default:
-        return <ExecutiveSummary />;
+  const handleLogin = (credentials) => {
+    // Enterprise credential verification placeholder (integrate with Supabase/Firebase/Auth0 here)
+    if (credentials.username && credentials.password) {
+      localStorage.setItem('erma_auth_session', 'active');
+      setIsAuthenticated(true);
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('erma_auth_session');
+    setIsAuthenticated(false);
+  };
+
   return (
-    <div className="app-container">
-      <Sidebar />
-      <div className="main-content">
-        <Header />
-        <main style={{ flex: 1 }}>
-          {renderActivePage()}
-        </main>
-      </div>
-      <DrilldownModal />
+    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans">
+      {isAuthenticated ? (
+        <Dashboard onLogout={handleLogout} />
+      ) : (
+        <Home onLogin={handleLogin} />
+      )}
     </div>
   );
 }
